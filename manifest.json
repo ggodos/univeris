@@ -1,0 +1,42 @@
+{
+  "name": "Kekw счётчик баллов",
+  "version": "1337",
+  "description": "Считает баллы в универисе. А ты чё думал? А ещё есть иконка клоуна",
+  "manifest_version": 3,
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "webRequest",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "https://studlk.susu.ru/*",
+    "https://studlk.susu.ru/*/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "images/icon.png",
+      "32": "images/icon.png",
+      "48": "images/icon.png",
+      "128": "images/icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://studlk.susu.ru/*/StudyPlan/OpenJournal/*"],
+      "js": ["src/journal.js"],
+      "css": ["src/journal.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://studlk.susu.ru/*/StudyPlan/StudyPlanView"],
+      "js": ["src/studyPlan.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
