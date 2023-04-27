@@ -34,7 +34,7 @@
       "run_at": "document_end"
     },
     {
-      "matches": ["*://studlk.susu.ru/*/StudyPlan/StudyPlanView"],
+      "matches": ["*://studlk.susu.ru/*"],
       "js": ["src/studyPlan.js"],
       "run_at": "document_end"
     }

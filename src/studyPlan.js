@@ -35,7 +35,6 @@ port.onMessage.addListener(function (msg) {
         const key = journal_url.replace("https://studlk.susu.ru/", "");
         // grade, exam, max, your, procent,
         const { grade, exam, max, your, procent } = items[key];
-        console.log(name, grade, exam);
         if (grade) {
           const color_cell = row.querySelector(`.dxgvIndentCell`);
           const kekisMeter = (n) => {

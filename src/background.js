@@ -35,10 +35,26 @@ function colorToGrade(color) {
 }
 
 var ports = {};
+var lateAdd = {};
 
 chrome.runtime.onConnect.addListener(function (port) {
   ports[port.name] = port;
+  if (lateAdd[port.name]) {
+    port.postMessage(lateAdd[port.name]);
+    delete lateAdd[port.name];
+  }
 });
+
+function sendMessageToPort(portName, message) {
+  const port = ports[portName];
+  if (!port) {
+    console.log(`No port ${portName}`);
+    lateAdd[portName] = message;
+    return;
+  }
+
+  port.postMessage(message);
+}
 
 chrome.runtime.onMessage.addListener(async function (
   request,
@@ -59,19 +75,19 @@ chrome.runtime.onMessage.addListener(async function (
 });
 
 const studyPlanXhr = "https://studlk.susu.ru/ru/StudyPlan/StudyPlanGridPartial";
-const jorunalXhr = "https://studlk.susu.ru/ru/StudyPlan/GetMarks";
+const journalXhr = "https://studlk.susu.ru/ru/StudyPlan/GetMarks";
 
 chrome.webRequest.onCompleted.addListener(
   function (details) {
-    if (details.url == studyPlanXhr) {
+    if (details.url.includes(studyPlanXhr)) {
       chrome.storage.local.get(null, function (items) {
-        ports["study-plan"].postMessage({ action: "table_update", items });
+        sendMessageToPort("study-plan", { action: "table_update", items });
       });
     }
 
-    if (details.url == jorunalXhr) {
-      ports["journal"].postMessage({ action: "can_calculate_points" });
+    if (details.url == journalXhr) {
+      sendMessageToPort("journal", { action: "can_calculate_points" });
     }
   },
-  { urls: [studyPlanXhr, jorunalXhr], types: ["xmlhttprequest"] }
+  { urls: [studyPlanXhr, journalXhr], types: ["xmlhttprequest"] }
 );
